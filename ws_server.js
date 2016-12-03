@@ -17,19 +17,22 @@ var server = ws.createServer(function (conn) {
   console.log("New connection")
   
   var count = 1;
-  var old_temp = "";
   while(count < 100000 && server) {
-    var d;
-    if(d = IMU.getValueSync()) {
-      temp = util.format('%s', d.temperature.toFixed(4));
-      if(temp != old_temp) {
-        console.log(temp);
-        conn.send(temp);
-        count++;
-        old_temp = temp;
-      }
-    }
+    var d = IMU.getValueSync();
+    temp = util.format('%s', d.temperature.toFixed(4));
+    console.log(temp);
+    // IMU.getValue(callb);
+    //IMU.getValue(callb1);
+    // conn.send(count.toString());
+    conn.send(temp);
+    count++;
   }
+
+
+
+  //conn.on("text", function() {
+  //conn.sendText("testing!!");
+  //})
 
 
   conn.on("close", function(code, reason) {
