@@ -15,21 +15,27 @@ var ws = require("nodejs-websocket")
 var server = ws.createServer(function (conn) {
 
   console.log("New connection")
+ /* connection.on("text", function (str) {
+    if(str = "levitation_on") {
+      connection.send("1");  
+    }
+  )}*/
   
-  var count = 1;
-  var old_temp = "";
-  while(count < 100000 && server) {
+  var start = new Date().getTime();
+
+  while(true) { 
     var d;
     if(d = IMU.getValueSync()) {
-      temp = util.format('%s', d.temperature.toFixed(4));
-      if(temp != old_temp) {
-        console.log(temp);
+      var date = new Date();
+      var now = date.getTime();
+      if(now - start  >= 100) {
+      	temp = util.format('%s', d.temperature.toFixed(4));
+        console.log(date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + ":" + date.getMilliseconds() + "  temp:" + temp);
         conn.send(temp);
-        count++;
-        old_temp = temp;
+	start = now;
       }
     }
-  }
+  } 
 
 
   conn.on("close", function(code, reason) {
